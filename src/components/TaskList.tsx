@@ -16,14 +16,58 @@ export function TaskList() {
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if (newTaskTitle){
+      let id = tasks.length;
+
+      const newTask = {
+        id: id++,
+        title: newTaskTitle,
+        isComplete: false,
+      }
+
+      const newTasks = [ ...tasks, newTask]
+      setTasks(newTasks);
+
+    }
+
+    setNewTaskTitle('');
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+
+    const taskIndex = tasks.findIndex(task => task.id === id);
+
+    const task = tasks[taskIndex];
+    tasks.splice(taskIndex, 1)
+
+    let isComplete = false
+
+    if (task.isComplete){
+      isComplete = false
+    }
+    else {
+      isComplete = true
+    }
+
+    const taskUpdate = {
+      id,
+      title: task.title,
+      isComplete
+    }
+
+    tasks.splice(taskIndex, 0, taskUpdate)
+    const tasksUpdate = [...tasks]
+
+    setTasks(tasksUpdate);
+
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    const taskIndex = tasks.findIndex(task => task.id === id);
+    tasks.splice(taskIndex, 1)
+    setTasks([...tasks]);
   }
 
   return (
@@ -32,9 +76,9 @@ export function TaskList() {
         <h2>Minhas tasks</h2>
 
         <div className="input-group">
-          <input 
-            type="text" 
-            placeholder="Adicionar novo todo" 
+          <input
+            type="text"
+            placeholder="Adicionar novo todo"
             onChange={(e) => setNewTaskTitle(e.target.value)}
             value={newTaskTitle}
           />
@@ -50,7 +94,7 @@ export function TaskList() {
             <li key={task.id}>
               <div className={task.isComplete ? 'completed' : ''} data-testid="task" >
                 <label className="checkbox-container">
-                  <input 
+                  <input
                     type="checkbox"
                     readOnly
                     checked={task.isComplete}
@@ -66,7 +110,7 @@ export function TaskList() {
               </button>
             </li>
           ))}
-          
+
         </ul>
       </main>
     </section>
